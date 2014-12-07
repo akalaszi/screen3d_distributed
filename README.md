@@ -11,10 +11,9 @@ extract zip
 launch:
 	./installChemAxonDeps.sh <path-to-marvinbeans-home> 
 
-
 Build
 -----
-mvn install
+mvn clean install
 
 Setup hadoop environment
 ---
@@ -34,10 +33,17 @@ Setup hadoop environment
 3. install hadoop:
 	http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/SingleCluster.html
 
-4. spin up the single node hadoop cluster for testing
+Usage
+-----
+1. spin up the single node hadoop cluster for testing
 	hdfs namenode -format
 	start-dfs.sh
+	
+2. copy file to the hdfs:
+	hdfs dfs -mkdir /input
+	hdfs dfs -put ./examples/io/basic/mols.sdf /input/
 
+3. run:
+	hadoop jar screen3d_distributed-1.0-SNAPSHOT-job.jar /input/mols.sdf /output
 
--type:
-hadoop jar screen3d_distributed-1.0-SNAPSHOT-job.jar <parameters>
+	
