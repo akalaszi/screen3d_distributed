@@ -182,7 +182,7 @@
 					</descriptors>
 					<archive>
 						<manifest>
-							<mainClass>org.akalaszi.WordCount</mainClass>
+							<mainClass>org.akalaszi.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
