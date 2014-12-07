@@ -7,11 +7,7 @@ import java.util.logging.Logger;
 import org.akalaszi.WordCount.IntSumReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class Main {
 	private final static Logger logger = Logger.getLogger(Main.class.getName());
@@ -43,6 +39,7 @@ public class Main {
 			job.setOutputFormatClass(ChemOutputFormat.class);
 
 			ChemInputFormat.setInputPaths(job, new Path(args[0]));
+			ChemOutputFormat.setOutputPath(job, new Path(args[1]));
 			return job;
 		} catch (IOException io) {
 			throw new IllegalStateException(io);
