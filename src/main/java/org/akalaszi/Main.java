@@ -1,7 +1,6 @@
 package org.akalaszi;
 
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.akalaszi.WordCount.IntSumReducer;
@@ -12,13 +11,8 @@ import org.apache.hadoop.mapreduce.Job;
 public class Main {
 	private final static Logger logger = Logger.getLogger(Main.class.getName());
 
-	public static void main(String[] args) {
-		try {
-			Job job = clean3dJob(args);
-			System.exit(job.waitForCompletion(true) ? 0 : 1);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Could not finish job.", e);
-		}
+	public static void main(String[] args) throws ClassNotFoundException, IOException, InterruptedException {
+			clean3dJob(args).waitForCompletion(true) ;
 	}
 
 	private static Job clean3dJob(String[] args) {
@@ -40,6 +34,7 @@ public class Main {
 
 			ChemInputFormat.setInputPaths(job, new Path(args[0]));
 			ChemOutputFormat.setOutputPath(job, new Path(args[1]));
+			
 			return job;
 		} catch (IOException io) {
 			throw new IllegalStateException(io);
