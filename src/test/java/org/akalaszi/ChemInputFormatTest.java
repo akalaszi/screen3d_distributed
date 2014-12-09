@@ -4,9 +4,7 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.mapreduce.Job;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,20 +53,20 @@ public class ChemInputFormatTest {
     // cif.getSplits(job);
     // }
 
-    private FileStatus createFileStatus() {
-        long length = 1;
-        boolean isdir = false;
-        int block_replication = -1;
-        int blocksize = -1;
-        long modification_time = -1;
-        long access_time = -1;
-        FsPermission permission = null;
-        String owner = null;
-        String group = null;
-        Path symlink = null;
-        Path path = new Path("/a/b/c");
-        FileStatus fileStatus = new FileStatus(length, isdir, block_replication, blocksize, modification_time,
-                access_time, permission, owner, group, symlink, path);
-        return fileStatus;
-    }
+    // private FileStatus createFileStatus() {
+    // long length = 1;
+    // boolean isdir = false;
+    // int block_replication = -1;
+    // int blocksize = -1;
+    // long modification_time = -1;
+    // long access_time = -1;
+    // FsPermission permission = null;
+    // String owner = null;
+    // String group = null;
+    // Path symlink = null;
+    // Path path = new Path("/a/b/c");
+    // FileStatus fileStatus = new FileStatus(length, isdir, block_replication, blocksize, modification_time,
+    // access_time, permission, owner, group, symlink, path);
+    // return fileStatus;
+    // }
 }

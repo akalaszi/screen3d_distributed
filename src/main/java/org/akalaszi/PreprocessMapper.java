@@ -12,6 +12,7 @@ import chemaxon.struc.Molecule;
 
 public class PreprocessMapper extends Mapper<Text, Text, Text, Text> {
 
+    @Override
     public void map(Text key, Text molecule, Context context) throws IOException, InterruptedException {
         Molecule m = MMPAlignment.preprocess(MolImporter.importMol(molecule.toString()), true);
         context.write(key, new Text(MolExporter.exportToFormat(m, "mrv")));

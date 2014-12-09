@@ -29,7 +29,7 @@ public class ParsedSplit extends InputSplit implements Writable {
         }
         return ret;
     }
-    
+
     public ParsedSplit() {
     }
 

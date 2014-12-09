@@ -15,51 +15,49 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class ChemOutputFormat extends FileOutputFormat<Text, Text> {
 
-	public static String SEPERATOR = "mapreduce.output.textoutputformat.separator";
+    public static String SEPERATOR = "mapreduce.output.textoutputformat.separator";
 
-	protected static class MoleculeRecordWriter extends
-			RecordWriter<Text, Text> {
-		private static final String utf8 = "UTF-8";
-		private static final byte[] newline;
-		static {
-			try {
-				newline = "\n".getBytes(utf8);
-			} catch (UnsupportedEncodingException uee) {
-				throw new IllegalArgumentException("can't find " + utf8
-						+ " encoding");
-			}
-		}
+    protected static class MoleculeRecordWriter extends RecordWriter<Text, Text> {
+        private static final String utf8 = "UTF-8";
+        private static final byte[] newline;
+        static {
+            try {
+                newline = "\n".getBytes(utf8);
+            } catch (UnsupportedEncodingException uee) {
+                throw new IllegalArgumentException("can't find " + utf8 + " encoding");
+            }
+        }
 
-		protected DataOutputStream out;
+        protected DataOutputStream out;
 
-		public MoleculeRecordWriter(DataOutputStream out) {
-			this.out = out;
-		}
+        public MoleculeRecordWriter(DataOutputStream out) {
+            this.out = out;
+        }
 
-		public synchronized void write(Text key, Text value)
-				throws IOException {
+        @Override
+        public synchronized void write(Text key, Text value) throws IOException {
 
-			if (value == null) {
-				return;
-			}
-			out.write(value.getBytes());
-			out.write(newline);
-		}
+            if (value == null) {
+                return;
+            }
+            out.write(value.getBytes());
+            out.write(newline);
+        }
 
-		public synchronized void close(TaskAttemptContext context)
-				throws IOException {
-			out.close();
-		}
-	}
+        @Override
+        public synchronized void close(TaskAttemptContext context) throws IOException {
+            out.close();
+        }
+    }
 
-	public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext job)
-			throws IOException, InterruptedException {
-		Configuration conf = job.getConfiguration();
-		String extension = "mrv";
+    @Override
+    public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext job) throws IOException, InterruptedException {
+        Configuration conf = job.getConfiguration();
+        String extension = "mrv";
 
-		Path file = getDefaultWorkFile(job, extension);
-		FileSystem fs = file.getFileSystem(conf);
-		FSDataOutputStream fileOut = fs.create(file, false);
-		return new MoleculeRecordWriter(fileOut);
-	}
+        Path file = getDefaultWorkFile(job, extension);
+        FileSystem fs = file.getFileSystem(conf);
+        FSDataOutputStream fileOut = fs.create(file, false);
+        return new MoleculeRecordWriter(fileOut);
+    }
 }

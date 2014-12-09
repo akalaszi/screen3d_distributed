@@ -6,6 +6,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Main {
 
@@ -28,12 +29,11 @@ public class Main {
 
             job.setOutputKeyClass(Text.class);
             job.setOutputValueClass(Text.class);
-            // job.setSortComparatorClass(OutputKeyComparator.class);
 
             job.setOutputFormatClass(ChemOutputFormat.class);
 
             ChemInputFormat.setInputPaths(job, new Path(args[0]));
-            ChemOutputFormat.setOutputPath(job, new Path(args[1]));
+            FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
             return job;
         } catch (IOException io) {
