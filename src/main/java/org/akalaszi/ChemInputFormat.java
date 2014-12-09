@@ -13,6 +13,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.ClusterStatus;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.JobClient;
@@ -32,7 +33,7 @@ import chemaxon.marvin.io.MRecord;
 import chemaxon.marvin.io.MRecordParseException;
 import chemaxon.marvin.io.MRecordReader;
 
-public class ChemInputFormat extends InputFormat<String, String> {
+public class ChemInputFormat extends InputFormat<Text, Text> {
 
 	private static final String INPUT_PATH = "INPUT_PATH";
 	public static int DEFAULT_RECORDS_PER_SPLIT = 100;
@@ -125,7 +126,7 @@ public class ChemInputFormat extends InputFormat<String, String> {
 
 					String key = path.getName() + "_" + indexInFile++;
 					toCurrentSplit.add(new ParsedSplit.Element(key, record
-							.getMolString()));
+							.getString()));
 					processedRecordCount++;
 				}
 
@@ -168,7 +169,7 @@ public class ChemInputFormat extends InputFormat<String, String> {
 	}
 
 	@Override
-	public RecordReader<String, String> createRecordReader(InputSplit split,
+	public RecordReader<Text, Text> createRecordReader(InputSplit split,
 			TaskAttemptContext context) throws IOException,
 			InterruptedException {
 

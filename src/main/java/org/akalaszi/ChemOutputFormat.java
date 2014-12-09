@@ -8,16 +8,17 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class ChemOutputFormat extends FileOutputFormat<String, String> {
+public class ChemOutputFormat extends FileOutputFormat<Text, Text> {
 
 	public static String SEPERATOR = "mapreduce.output.textoutputformat.separator";
 
 	protected static class MoleculeRecordWriter extends
-			RecordWriter<String, String> {
+			RecordWriter<Text, Text> {
 		private static final String utf8 = "UTF-8";
 		private static final byte[] newline;
 		static {
@@ -35,13 +36,13 @@ public class ChemOutputFormat extends FileOutputFormat<String, String> {
 			this.out = out;
 		}
 
-		public synchronized void write(String key, String value)
+		public synchronized void write(Text key, Text value)
 				throws IOException {
 
 			if (value == null) {
 				return;
 			}
-			out.write(value.getBytes(utf8));
+			out.write(value.getBytes());
 			out.write(newline);
 		}
 
@@ -51,7 +52,7 @@ public class ChemOutputFormat extends FileOutputFormat<String, String> {
 		}
 	}
 
-	public RecordWriter<String, String> getRecordWriter(TaskAttemptContext job)
+	public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext job)
 			throws IOException, InterruptedException {
 		Configuration conf = job.getConfiguration();
 		String extension = "mrv";

@@ -23,7 +23,14 @@ public class ParsedSplit extends InputSplit implements Writable {
 
     @Override
     public long getLength() throws IOException, InterruptedException {
-        throw new UnsupportedOperationException();
+        long ret = 0;
+        for (Element element : elements) {
+            ret += element.size();
+        }
+        return ret;
+    }
+    
+    public ParsedSplit() {
     }
 
     public ParsedSplit(List<Element> elements, String[] locations) {
@@ -56,6 +63,10 @@ public class ParsedSplit extends InputSplit implements Writable {
 
         public String getValue() {
             return value;
+        }
+
+        public long size() {
+            return id.length() + value.length();
         }
     }
 
