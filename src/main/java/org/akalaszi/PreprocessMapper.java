@@ -11,10 +11,11 @@ import chemaxon.marvin.alignment.MMPAlignment;
 import chemaxon.struc.Molecule;
 
 public class PreprocessMapper extends Mapper<Text, Text, Text, Text> {
+    public static final String EXTENSION = "sdf";
 
     @Override
     public void map(Text key, Text molecule, Context context) throws IOException, InterruptedException {
         Molecule m = MMPAlignment.preprocess(MolImporter.importMol(molecule.toString()), true);
-        context.write(key, new Text(MolExporter.exportToFormat(m, "mrv")));
+        context.write(key, new Text(MolExporter.exportToFormat(m, EXTENSION)));
     }
 }

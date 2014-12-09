@@ -2,7 +2,6 @@ package org.akalaszi;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -15,18 +14,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class ChemOutputFormat extends FileOutputFormat<Text, Text> {
 
-    public static String SEPERATOR = "mapreduce.output.textoutputformat.separator";
-
     protected static class MoleculeRecordWriter extends RecordWriter<Text, Text> {
-        private static final String utf8 = "UTF-8";
-        private static final byte[] newline;
-        static {
-            try {
-                newline = "\n".getBytes(utf8);
-            } catch (UnsupportedEncodingException uee) {
-                throw new IllegalArgumentException("can't find " + utf8 + " encoding");
-            }
-        }
 
         protected DataOutputStream out;
 
@@ -41,7 +29,6 @@ public class ChemOutputFormat extends FileOutputFormat<Text, Text> {
                 return;
             }
             out.write(value.getBytes());
-            out.write(newline);
         }
 
         @Override
@@ -53,7 +40,7 @@ public class ChemOutputFormat extends FileOutputFormat<Text, Text> {
     @Override
     public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext job) throws IOException, InterruptedException {
         Configuration conf = job.getConfiguration();
-        String extension = "mrv";
+        String extension = "." + PreprocessMapper.EXTENSION;
 
         Path file = getDefaultWorkFile(job, extension);
         FileSystem fs = file.getFileSystem(conf);

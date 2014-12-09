@@ -13,7 +13,6 @@ import chemaxon.marvin.alignment.AlignmentMoleculeFactory;
 import chemaxon.marvin.alignment.AlignmentProperties.DegreeOfFreedomType;
 import chemaxon.marvin.alignment.MMPAlignment;
 import chemaxon.marvin.alignment.PairwiseAlignment;
-import chemaxon.marvin.modelling.struc.MolGeom;
 import chemaxon.struc.Molecule;
 
 public class ChemAxonLibraryTest {
@@ -63,7 +62,7 @@ public class ChemAxonLibraryTest {
         PairwiseAlignment pa = new PairwiseAlignment();
         pa.setQuery(am1);
         pa.similarity(am2);
-        MolGeom.writeMol(pa.getAlignedMoleculesAsFragments(), "aligned.mrv");
+//        MolGeom.writeMol(pa.getAlignedMoleculesAsFragments(), "aligned.mrv");
 
     }
 }
