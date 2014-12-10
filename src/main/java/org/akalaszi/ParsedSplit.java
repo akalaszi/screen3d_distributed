@@ -3,10 +3,7 @@ package org.akalaszi;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
@@ -19,7 +16,6 @@ public class ParsedSplit extends InputSplit implements Writable {
 
     private Element[] elements;
     private String[] locations;
-    private static Logger log = Logger.getLogger(ParsedSplit.class.getName());
 
     @Override
     public long getLength() throws IOException, InterruptedException {
@@ -36,7 +32,6 @@ public class ParsedSplit extends InputSplit implements Writable {
     public ParsedSplit(List<Element> elements, String[] locations) {
         this.elements = elements.toArray(new Element[elements.size()]);
         this.locations = locations;
-        log.log(Level.INFO, Arrays.toString(locations));
     }
 
     @Override
@@ -67,6 +62,10 @@ public class ParsedSplit extends InputSplit implements Writable {
 
         public long size() {
             return id.length() + value.length();
+        }
+        @Override
+        public String toString() {
+            return id;
         }
     }
 

@@ -199,35 +199,4 @@ public class ChemInputFormat extends InputFormat<Text, Text> {
         conf.set(INPUT_PATH, str.toString());
     }
 
-    // public static void setOutputFile(Job job, Path outputPath)
-    // throws IOException {
-    // Configuration conf = job.getConfiguration();
-    // Path path = outputPath.getFileSystem(conf).makeQualified(outputPath);
-    // StringBuffer str = new StringBuffer(StringUtils.escapeString(path
-    // .toString()));
-    // conf.set(OUTPUT_FILE, str.toString());
-    // }
-    //
-    // public static Path getOutputFile(JobContext context) {
-    // return new Path(StringUtils.unEscapeString(context.getConfiguration()
-    // .get(OUTPUT_FILE, "")));
-    // }
-    //
-    // public void checkOutputSpecs(JobContext job)
-    // throws FileAlreadyExistsException, IOException {
-    // // Ensure that the output directory is set and not already there
-    // Path outFile = getOutputFile(job);
-    // if (outFile == null) {
-    // throw new InvalidJobConfException("Output directory not set.");
-    // }
-    //
-    // // get delegation token for outDir's file system
-    // TokenCache.obtainTokensForNamenodes(job.getCredentials(),
-    // new Path[] { outFile }, job.getConfiguration());
-    //
-    // if (outFile.getFileSystem(job.getConfiguration()).exists(outFile)) {
-    // throw new FileAlreadyExistsException("Output file " + outFile
-    // + " already exists");
-    // }
-    // }
 }

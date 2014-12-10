@@ -4,9 +4,10 @@ import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class Main {
 
@@ -27,13 +28,13 @@ public class Main {
             job.setCombinerClass(MRecordReducer.class);
             job.setReducerClass(MRecordReducer.class);
 
-            job.setOutputKeyClass(Text.class);
+            job.setOutputKeyClass(NullWritable.class);
             job.setOutputValueClass(Text.class);
 
-            job.setOutputFormatClass(ChemOutputFormat.class);
+            job.setOutputFormatClass(TextOutputFormat.class);
 
             ChemInputFormat.setInputPaths(job, new Path(args[0]));
-            FileOutputFormat.setOutputPath(job, new Path(args[1]));
+            TextOutputFormat.setOutputPath(job, new Path(args[1]));
 
             return job;
         } catch (IOException io) {
