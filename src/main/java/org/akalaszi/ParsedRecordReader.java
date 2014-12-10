@@ -10,13 +10,13 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 public class ParsedRecordReader extends RecordReader<Text, Text> {
     private List<ParsedSplit.Element> elements;
-    private int currentIndex = 0;
+    private int currentIndex = -1;
     private int size;
 
     @Override
     public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
         elements = ((ParsedSplit) split).getElements();
-        currentIndex = 0;
+        currentIndex = -1;
         size = elements.size();
     }
 

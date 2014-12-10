@@ -24,7 +24,8 @@ public class ParsedRecordReaderTest {
 
         ParsedRecordReader prr = new ParsedRecordReader();
         prr.initialize(ps, null);
-
+        
+        Assert.assertTrue(prr.nextKeyValue());
         Assert.assertEquals("1", prr.getCurrentKey().toString());
         Assert.assertEquals("val1", prr.getCurrentValue().toString());
         Assert.assertEquals(0.33, prr.getProgress(), 1e-2);
