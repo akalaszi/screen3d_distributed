@@ -36,7 +36,7 @@ import chemaxon.marvin.io.MRecordReader;
 public class ChemInputFormat extends InputFormat<Text, Text> {
 
     private static final String INPUT_PATH = "INPUT_PATH";
-    public static int DEFAULT_RECORDS_PER_SPLIT = 100;
+    public static int DEFAULT_RECORDS_PER_SPLIT = 200;
 
     /**
      * based on {@link FileInputFormat} List input directories. Subclasses may override to, e.g., select only files
@@ -116,7 +116,8 @@ public class ChemInputFormat extends InputFormat<Text, Text> {
                     }
 
                     String key = path.getName() + "_" + indexInFile++;
-                    toCurrentSplit.add(new ParsedSplit.Element(key, record.getString()));
+                    MRecordSerializer jsonSerializer = new MRecordSerializer(record, key);
+                    toCurrentSplit.add(new ParsedSplit.Element(key, jsonSerializer.toJSON()));
                     processedRecordCount++;
                 }
 

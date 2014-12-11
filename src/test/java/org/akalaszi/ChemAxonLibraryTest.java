@@ -62,7 +62,7 @@ public class ChemAxonLibraryTest {
         PairwiseAlignment pa = new PairwiseAlignment();
         pa.setQuery(am1);
         pa.similarity(am2);
-//        MolGeom.writeMol(pa.getAlignedMoleculesAsFragments(), "aligned.mrv");
+        // MolGeom.writeMol(pa.getAlignedMoleculesAsFragments(), "aligned.mrv");
 
     }
 }
