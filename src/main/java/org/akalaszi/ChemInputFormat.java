@@ -108,7 +108,7 @@ public class ChemInputFormat extends InputFormat<Text, Text> {
             MRecord record = null;
 
             try {
-                while ((record = mr.nextRecord()) != null && indexInFile < 30) {
+                while ((record = mr.nextRecord()) != null) {
 
                     if (!toCurrentSplit.isEmpty() && processedRecordCount % DEFAULT_RECORDS_PER_SPLIT == 0) {
                         splits.add(new ParsedSplit(toCurrentSplit, hosts));
