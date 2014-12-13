@@ -28,6 +28,7 @@ public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
     public void map(Text key, Text mrecord, Context context) throws IOException, InterruptedException {
         try {
             Molecule original = MRecordSerializer.fromJSON(mrecord.toString()).toMolecule();
+            context.progress();
             List<Molecule> processed = processStructureForScreen3DRun(original);
             for (int i = 0; i < processed.size(); i++) {
                 String id = key.toString();

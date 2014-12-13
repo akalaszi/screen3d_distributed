@@ -36,7 +36,7 @@ import chemaxon.marvin.io.MRecordReader;
 public class ChemInputFormat extends InputFormat<Text, Text> {
 
     private static final String INPUT_PATH = "INPUT_PATH";
-    public static int DEFAULT_RECORDS_PER_SPLIT = 100;
+    public static int DEFAULT_RECORDS_PER_SPLIT = 50;
 
     /**
      * based on {@link FileInputFormat} List input directories. Subclasses may override to, e.g., select only files
