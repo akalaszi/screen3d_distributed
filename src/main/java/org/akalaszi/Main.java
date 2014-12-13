@@ -18,7 +18,9 @@ public class Main {
     private static Job clean3dJob(String[] args) {
         try {
             Configuration conf = new Configuration();
-
+            long milliSeconds = 1000*60*60; //<default is 600000, likewise can give any value)
+            conf.setLong("mapred.task.timeout", milliSeconds);
+            
             Job job = Job.getInstance(conf, "generate3dMols");
             job.setJarByClass(Main.class);
             job.setInputFormatClass(ChemInputFormat.class);
