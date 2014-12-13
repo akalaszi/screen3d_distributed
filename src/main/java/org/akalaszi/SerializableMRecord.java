@@ -17,16 +17,16 @@ import com.google.gson.Gson;
  * @author Adrian Kalaszi
  *
  */
-class MRecordSerializer {
+class SerializableMRecord {
     String molecule;
     String name;
     List<String[]> properties = new ArrayList<String[]>();
 
-    MRecordSerializer(MRecord record, String id) {
+    SerializableMRecord(MRecord record, String id) {
         this(record.getMoleculeName(), record.getString(), record.getPropertyContainer(), id);
     }
 
-    MRecordSerializer(String name, String molecule, MPropertyContainer container, String id) {
+    SerializableMRecord(String name, String molecule, MPropertyContainer container, String id) {
         this.name = name;
         this.molecule = molecule;
         addProperties(container);
@@ -56,7 +56,7 @@ class MRecordSerializer {
         return new Gson().toJson(this);
     }
 
-    static MRecordSerializer fromJSON(String json) {
-        return new Gson().fromJson(json, MRecordSerializer.class);
+    static SerializableMRecord fromJSON(String json) {
+        return new Gson().fromJson(json, SerializableMRecord.class);
     }
 }

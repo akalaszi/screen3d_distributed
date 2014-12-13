@@ -116,7 +116,7 @@ public class ChemInputFormat extends InputFormat<Text, Text> {
                     }
 
                     String key = path.getName() + "_" + indexInFile++;
-                    MRecordSerializer jsonSerializer = new MRecordSerializer(record, key);
+                    SerializableMRecord jsonSerializer = new SerializableMRecord(record, key);
                     toCurrentSplit.add(new ParsedSplit.Element(key, jsonSerializer.toJSON()));
                     processedRecordCount++;
                 }

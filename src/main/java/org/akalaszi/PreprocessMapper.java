@@ -25,6 +25,8 @@ public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
     public static final String EXTENSION = "sdf";
     public static final int STEREOISOMER_LIMIT = 50;
     public static final String PREPROCESS_ID = "preprocessId";
+    public static final String STEREO_TAG = "_stereo_";
+    
     public static Logger log = Logger.getLogger(PreprocessMapper.class.getName());
 
     static interface HeartBeat {
@@ -34,7 +36,7 @@ public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
     @Override
     public void map(Text key, Text mrecord, final Context context) throws IOException, InterruptedException {
         try {
-            Molecule original = MRecordSerializer.fromJSON(mrecord.toString()).toMolecule();
+            Molecule original = SerializableMRecord.fromJSON(mrecord.toString()).toMolecule();
             context.progress();
             List<Molecule> processed = processStructureForScreen3DRun(original, new HeartBeat() {
                 
@@ -47,7 +49,7 @@ public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
             for (int i = 0; i < processed.size(); i++) {
                 String id = key.toString();
                 if (i > 1) {
-                    id += "_stereo_" + i;
+                    id += STEREO_TAG + i;
                 }
                 Molecule toWrite = processed.get(i);
                 toWrite.setProperty(PREPROCESS_ID, id);
