@@ -136,6 +136,20 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.chemaxon</groupId>
+			<artifactId>calculations</artifactId>
+			<version>${cxn.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.chemaxon</groupId>
+			<artifactId>calculations-plugin</artifactId>
+			<version>${cxn.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>16.0.1</version>
