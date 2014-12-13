@@ -13,7 +13,7 @@ installLicense() {
 installLicenses() {
 	for node in `gcutil listinstances --format=csv --columns name | grep -v name`
 	do
-		installLicense
+		installLicense &
 	done
 }
 
