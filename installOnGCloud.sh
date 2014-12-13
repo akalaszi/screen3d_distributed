@@ -1,15 +1,26 @@
 #Copies ChemAxon license to all nodes.
 
-h_lic_dir=/home/hadoop/.chemaxon
 home=/home/adminuser
+h_lic_dir=/home/hadoop/.chemaxon
 
-for node in `gcutil listinstances --format=csv --columns name | grep -v name`
-do
+installLicense() {
    echo $node
    gcutil push $node $home/.chemaxon/license.cxl $home
    gcutil ssh $node "sudo mkdir $h_lic_dir; sudo cp $home/license.cxl $h_lic_dir; sudo chown -R hadoop $h_lic_dir; sudo chgrp -R hadoop $h_lic_dir;"
    echo
-done
+}
+
+installLicenses() {
+	for node in `gcutil listinstances --format=csv --columns name | grep -v name`
+	do
+		installLicense
+	done
+}
+
+if [ $1 = "-lic" ]
+then
+	installLicenses
+fi
 
 #Build project
 mvn clean install
