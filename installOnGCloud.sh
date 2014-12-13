@@ -17,7 +17,7 @@ installLicenses() {
 	done
 }
 
-if [ $1 = "-lic" ]
+if [ "$1" == "-lic" ]
 then
 	installLicenses
 fi
@@ -27,5 +27,4 @@ mvn clean install
 
 #Push built artifact on the master node.
 master_node=`gcutil listinstances --format=csv --columns name | grep [-]m[-]`
-
 gcutil push $master_node target/screen3d_distributed-1.0-SNAPSHOT-job.jar $home 
