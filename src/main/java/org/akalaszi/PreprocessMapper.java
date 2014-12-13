@@ -11,6 +11,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import com.google.common.collect.ImmutableList;
 
+import chemaxon.calculations.clean.Cleaner;
 import chemaxon.calculations.hydrogenize.Hydrogenize;
 import chemaxon.formats.MolExporter;
 import chemaxon.marvin.alignment.MMPAlignment;
@@ -22,21 +23,34 @@ import chemaxon.struc.MoleculeGraph;
 
 public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
     public static final String EXTENSION = "sdf";
+    public static final int STEREOISOMER_LIMIT = 50;
+    public static final String PREPROCESS_ID = "preprocessId";
     public static Logger log = Logger.getLogger(PreprocessMapper.class.getName());
 
+    static interface HeartBeat {
+        void ping();
+    }
+    
     @Override
-    public void map(Text key, Text mrecord, Context context) throws IOException, InterruptedException {
+    public void map(Text key, Text mrecord, final Context context) throws IOException, InterruptedException {
         try {
             Molecule original = MRecordSerializer.fromJSON(mrecord.toString()).toMolecule();
             context.progress();
-            List<Molecule> processed = processStructureForScreen3DRun(original);
+            List<Molecule> processed = processStructureForScreen3DRun(original, new HeartBeat() {
+                
+                @Override
+                public void ping() {
+                    context.progress();
+                }
+            });
+            
             for (int i = 0; i < processed.size(); i++) {
                 String id = key.toString();
                 if (i > 1) {
                     id += "_stereo_" + i;
                 }
                 Molecule toWrite = processed.get(i);
-                toWrite.setProperty("preprocessId", id);
+                toWrite.setProperty(PREPROCESS_ID, id);
                 context.write(NullWritable.get(), new Text(MolExporter.exportToFormat(toWrite, EXTENSION)));
             }
 
@@ -45,13 +59,12 @@ public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
         }
     }
 
-    public static List<Molecule> processStructureForScreen3DRun(Molecule m) {
+    public static List<Molecule> processStructureForScreen3DRun(Molecule m, HeartBeat heart) {
         final Molecule ret = MMPAlignment.keepLargestFragment(m);
         MMPAlignment.removeLonePairs(ret);
 
         ret.valenceCheck();
         ret.aromatize(MoleculeGraph.AROM_BASIC);
-        ret.aromatize(false);
         ret.valenceCheck();
 
         MMPAlignment.fixValence(m);
@@ -59,16 +72,20 @@ public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
 
         StereoisomerPlugin plugin = new StereoisomerPlugin();
         plugin.setStereoisomerismType(StereoisomerPlugin.TETRAHEDRAL);
-        plugin.setMaxNumberOfStereoisomers(100);
-        plugin.setCheck3DStereo(true);
-        plugin.setIn3D(true);
-
+        plugin.setMaxNumberOfStereoisomers(STEREOISOMER_LIMIT);
+        plugin.setCheck3DStereo(false); 
+        
         try {
             plugin.setMolecule(ret);
             plugin.run();
 
             Molecule[] molecules = plugin.getStereoisomers();
             for (Molecule molecule : molecules) {
+
+                heart.ping();
+                Cleaner.clean(molecule, 3);//this can be slow
+                heart.ping();
+                
                 molecule.clearProperties();
                 copyProperties(m, molecule);
             }
