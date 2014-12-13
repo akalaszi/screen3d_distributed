@@ -46,4 +46,14 @@ Usage
 3. run:
 	hadoop jar screen3d_distributed-1.0-SNAPSHOT-job.jar /input/mols.sdf /output
 
+
+4. on google cloud
+	After setting up the hadoop cluster, install gcloud cli
+	launch: ./ installChemAxonLicense.sh
+	
+	To run 
+gcloud compute instances list
+gcloud compute ssh --zone=us-central1-a hadoop-w-5ar2
+hdfs dfs -get /screen3d_distributed-1.0-SNAPSHOT-job.jar
+hadoop jar screen3d_distributed-1.0-SNAPSHOT-job.jar NCI-merged-all.sdf /out4
 	
