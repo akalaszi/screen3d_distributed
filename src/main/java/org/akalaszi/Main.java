@@ -6,27 +6,59 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class Main {
 
     public static void main(String[] args) throws ClassNotFoundException, IOException, InterruptedException {
-        clean3dJob(args).waitForCompletion(true);
+        if (args.length != 3) {
+            cliHelp();
+        }
+
+        long milliSeconds = 1000 * 60 * 20;
+        if ("p".equals(args[0])) {
+            runJob("preprocess", milliSeconds, args[1], args[2], ChemInputFormat.class, PreprocessMapper.class);
+        } else if ("s".equals(args[0])) {
+            runJob("screen", milliSeconds, args[1], args[2], ChemInputFormatMatrix.class, AlignmentMapper.class);
+        } else {
+            cliHelp();
+        }
+
     }
 
-    private static Job clean3dJob(String[] args) {
+    private static void cliHelp() {
+        System.err.println("Distributed Screen3D");
+        System.err.println("Usage: [command] [input path] [output path]");
+        System.err.println("\twhere the command:\n\t\t p for preprocess\n\t\ts for screen");
+        System.exit(1);
+    }
+
+    /**
+     * Runs a map reduce job.
+     * 
+     * @param name name of the job.
+     * @param timeout Max allowed time between heart beats from the worker node.
+     * @param inputPath If file then processed. if dir, then all files in are processed.
+     * @param outputPath Output path dir. Many files will be written here.
+     * @param inputFormatClass {@link InputFormat} to process input file.
+     * @param mapperClass {@link Mapper} that is doing the calculation.
+     */
+    private static void runJob(String name, long timeout, String inputPath, String outputPath,
+            Class<? extends InputFormat<Text, Text>> inputFormatClass,
+            Class<? extends Mapper<Text, Text, NullWritable, Text>> mapperClass) {
         try {
             Configuration conf = new Configuration();
-            long milliSeconds = 1000*60*20; //<default is 600000, likewise can give any value)
-            conf.setLong("mapreduce.task.timeout", milliSeconds);
-            
-            Job job = Job.getInstance(conf, "generate3dMols");
+            conf.setLong("mapreduce.task.timeout", timeout);
+
+            Job job = Job.getInstance(conf, name);
+
+            job.setInputFormatClass(inputFormatClass);
+            job.setMapperClass(mapperClass);
+
             job.setJarByClass(Main.class);
-            job.setInputFormatClass(ChemInputFormat.class);
-
-            job.setMapperClass(PreprocessMapper.class);
-
             job.setCombinerClass(MRecordReducer.class);
             job.setReducerClass(MRecordReducer.class);
 
@@ -35,11 +67,11 @@ public class Main {
 
             job.setOutputFormatClass(TextOutputFormat.class);
 
-            ChemInputFormat.setInputPaths(job, new Path(args[0]));
-            TextOutputFormat.setOutputPath(job, new Path(args[1]));
+            ChemInputFormat.setInputPaths(job, new Path(inputPath));
+            TextOutputFormat.setOutputPath(job, new Path(outputPath));
 
-            return job;
-        } catch (IOException io) {
+            job.waitForCompletion(true);
+        } catch (Exception io) {
             throw new IllegalStateException(io);
         }
     }

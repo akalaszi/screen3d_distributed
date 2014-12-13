@@ -22,6 +22,10 @@ class SerializableMRecord {
     String name;
     List<String[]> properties = new ArrayList<String[]>();
 
+    SerializableMRecord(MRecord record) {
+        this(record.getMoleculeName(), record.getString(), record.getPropertyContainer(), null);
+    }
+
     SerializableMRecord(MRecord record, String id) {
         this(record.getMoleculeName(), record.getString(), record.getPropertyContainer(), id);
     }
@@ -30,7 +34,9 @@ class SerializableMRecord {
         this.name = name;
         this.molecule = molecule;
         addProperties(container);
-        addProperty("keyId", id);
+        if (id != null) {
+            addProperty("keyId", id);
+        }
     }
 
     private void addProperty(String key, String value) {

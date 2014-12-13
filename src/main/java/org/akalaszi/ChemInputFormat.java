@@ -46,7 +46,7 @@ public class ChemInputFormat extends InputFormat<Text, Text> {
      * @return array of FileStatus objects
      * @throws IOException if zero items.
      */
-    List<FileStatus> listStatus(JobContext job) throws IOException {
+    static List<FileStatus> listStatus(JobContext job) throws IOException {
         Path[] dirs = getInputPaths(job);
         if (dirs.length == 0) {
             throw new IOException("No input paths specified in job");
