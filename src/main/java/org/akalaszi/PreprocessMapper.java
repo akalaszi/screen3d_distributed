@@ -1,6 +1,7 @@
 package org.akalaszi;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,26 +27,26 @@ public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
     public static final int STEREOISOMER_LIMIT = 50;
     public static final String PREPROCESS_ID = "preprocessId";
     public static final String STEREO_TAG = "_stereo_";
-    
+
     public static Logger log = Logger.getLogger(PreprocessMapper.class.getName());
 
     static interface HeartBeat {
         void ping();
     }
-    
+
     @Override
     public void map(Text key, Text mrecord, final Context context) throws IOException, InterruptedException {
         try {
             Molecule original = SerializableMRecord.fromJSON(mrecord.toString()).toMolecule();
             context.progress();
             List<Molecule> processed = processStructureForScreen3DRun(original, new HeartBeat() {
-                
+
                 @Override
                 public void ping() {
                     context.progress();
                 }
             });
-            
+
             for (int i = 0; i < processed.size(); i++) {
                 String id = key.toString();
                 if (i > 1) {
@@ -75,23 +76,30 @@ public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
         StereoisomerPlugin plugin = new StereoisomerPlugin();
         plugin.setStereoisomerismType(StereoisomerPlugin.TETRAHEDRAL);
         plugin.setMaxNumberOfStereoisomers(STEREOISOMER_LIMIT);
-        plugin.setCheck3DStereo(false); 
-        
+        plugin.setCheck3DStereo(false);
+
         try {
             plugin.setMolecule(ret);
             plugin.run();
 
             Molecule[] molecules = plugin.getStereoisomers();
+            List<Molecule> molsIn3D = new ArrayList<Molecule>();
             for (Molecule molecule : molecules) {
 
                 heart.ping();
-                Cleaner.clean(molecule, 3);//this can be slow
+                try {
+                    Cleaner.clean(molecule, 3);// this can be slow
+                } catch (Exception e) {
+                    log.log(Level.INFO, "Could not calciulate 3D coordinates.", e);
+                }
                 heart.ping();
-                
-                molecule.clearProperties();
-                copyProperties(m, molecule);
+                if (molecule.getDim() == 3) {
+                    molecule.clearProperties();
+                    copyProperties(m, molecule);
+                    molsIn3D.add(molecule);
+                }
             }
-            return ImmutableList.copyOf(molecules);
+            return ImmutableList.copyOf(molsIn3D);
 
         } catch (PluginException e) {
             throw new RuntimeException(e);
