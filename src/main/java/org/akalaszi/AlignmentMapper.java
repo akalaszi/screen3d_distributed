@@ -38,7 +38,7 @@ public class AlignmentMapper extends Mapper<Text, Text, NullWritable, Text> {
         }
     }
 
-    public static Molecule alignTwoStructures(Molecule m1, Molecule m2) throws AlignmentException {
+    static Molecule alignTwoStructures(Molecule m1, Molecule m2) throws AlignmentException {
         AlignmentMoleculeFactory amf = new AlignmentMoleculeFactory();
         amf.setColor(ColoringScheme.EXTENDED_ATOMTYPES);
         amf.setNodeType(NodeType.SPHERIC);
