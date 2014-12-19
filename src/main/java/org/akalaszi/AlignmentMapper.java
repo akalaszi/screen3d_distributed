@@ -20,6 +20,7 @@ import chemaxon.struc.Molecule;
 
 public class AlignmentMapper extends Mapper<Text, Text, NullWritable, Text> {
     public static final String EXTENSION = "sdf";
+    public static final double MASS_DIFERENCE_LIMIT = 300;
     public static Logger log = Logger.getLogger(AlignmentMapper.class.getName());
 
     @Override
@@ -28,7 +29,11 @@ public class AlignmentMapper extends Mapper<Text, Text, NullWritable, Text> {
             SerializableMRecordPair pair = SerializableMRecordPair.fromJSON(mrecordPair.toString());
             Molecule m1 = pair.getRecord1().toMolecule();
             Molecule m2 = pair.getRecord2().toMolecule();
-
+            
+            if (Math.abs(m1.getExactMass() - m2.getExactMass()) > MASS_DIFERENCE_LIMIT) {
+                return;
+            }
+            
             Molecule result = alignTwoStructures(m1, m2);
             result.setProperty("screenedID", key.toString());
             context.write(NullWritable.get(), new Text(MolExporter.exportToFormat(result, EXTENSION)));
