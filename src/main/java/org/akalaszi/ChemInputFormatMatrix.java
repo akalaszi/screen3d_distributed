@@ -58,7 +58,7 @@ public class ChemInputFormatMatrix extends InputFormat<Text, Text> {
         for (int i = 0; i < records.size() - 1; i++) {
             MRecord ri = records.get(i);
             String idI = getId(ri);
-            for (int j = i + 1; i < records.size(); i++) {
+            for (int j = i + 1; j < records.size(); j++) {
                 MRecord rj = records.get(j);
                 if (isDifferentID(idI, getId(rj))) {
 
