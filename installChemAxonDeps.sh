@@ -1,11 +1,16 @@
 #!/bin/bash
+
 set -e
 
+echo "This command line tool installs ChemAxon jars into the local Maven repository."
+echo "Maven is required."
 if [ -z $1 ] 
 then
-	1st parameter to the marvinbeans install dir
-	2nd parameter marvin version /optional/
+	echo "	1st parameter: path to the marvinbeans install dir"
+	echo "	2nd parameter: marvin version /optional/"
+	exit
 fi
+
 
 cd $1
 version=$2
