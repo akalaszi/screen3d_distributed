@@ -55,8 +55,11 @@ public class AlignmentMapper extends Mapper<Text, Text, NullWritable, Text> {
         a.setMolecules(am1, am2);
         a.align();
         Molecule ret = a.getAlignedMoleculesAsFragments();
+        ret.clearProperties();
         ret.setProperty("3DTanimoto", String.valueOf(a.tanimoto()));
         ret.setProperty("3DScore", String.valueOf(a.getVolumeScore()));
+        PreprocessMapper.copyProperties(m1, ret, "1-");
+        PreprocessMapper.copyProperties(m2, ret, "2-");
         return ret;
     }
 

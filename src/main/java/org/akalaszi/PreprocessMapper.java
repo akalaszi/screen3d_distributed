@@ -107,11 +107,18 @@ public class PreprocessMapper extends Mapper<Text, Text, NullWritable, Text> {
 
     }
 
-    private static void copyProperties(final Molecule from, final Molecule to) {
+    static void copyProperties(final Molecule from, final Molecule to) {
+        copyProperties(from, to, null);
+    }
+
+    static void copyProperties(final Molecule from, final Molecule to, String nameSpace) {
         final String[] keys = from.properties().getKeys();
 
-        for (final String key : keys) {
+        for (String key : keys) {
             final String property = MPropHandler.convertToString(from.properties(), key);
+            if (nameSpace != null) {
+                key = nameSpace + key;
+            }
             to.setProperty(key, property);
         }
     }
