@@ -6,13 +6,14 @@ Hadoop based distribution of screen3D
 
 Install ChemAxon dependencies manually:
 ---------------------------------------
-http://www.chemaxon.com/download/marvin-suite/ select:  Platform independent (.zip)
+http://www.chemaxon.com/download/jchem-suite/ select:  Platform independent (.zip)
 extract zip 
 launch:
-	./installChemAxonDeps.sh <path-to-marvinbeans-home> 
+	./installChemAxonDeps.sh <path-to-jchem-home> <jchem-version>
 
 Build
 -----
+
 mvn clean install
 
 Setup hadoop environment
@@ -55,5 +56,11 @@ Usage
 gcloud compute instances list
 gcloud compute ssh --zone=us-central1-a hadoop-w-5ar2
 hdfs dfs -get /screen3d_distributed-1.0-SNAPSHOT-job.jar
-hadoop jar screen3d_distributed-1.0-SNAPSHOT-job.jar NCI-merged-all.sdf /out4
+
+Preprocess input:
+hadoop jar screen3d_distributed-1.0-SNAPSHOT-job.jar p NCI-merged-all.sdf /out4
+
+Run screen:
+hadoop jar screen3d_distributed-1.0-SNAPSHOT-job.jar s NCI-merged-all-3d.sdf /out5
+
 	
